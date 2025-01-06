@@ -1,0 +1,44 @@
+echo ================Domain >> pv-enum.txt
+Get-Domain >> pv-enum.txt
+echo ================DC >> pv-enum.txt
+Get-DomainController >> pv-enum-raw.txt
+Get-DomainController | select Forest, Name, OSVersion | fl >> pv-enum.txt
+echo ================ForestDomain >> pv-enum.txt
+Get-ForestDomain >> pv-enum.txt	
+echo ================PolicyData >> pv-enum.txt
+Get-DomainPolicyData >> pv-enum-raw.txt
+Get-DomainPolicyData | select -expand SystemAccess >> pv-enum.txt
+echo ================DomainUser >> pv-enum.txt
+Get-DomainUser >> pv-enum-raw.txt
+Get-DomainUser -Properties DisplayName, MemberOf | fl >> pv-enum.txt
+echo ================DomainComputer >> pv-enum.txt
+Get-DomainComputer >> pv-enum-raw.txt
+Get-DomainComputer -Properties DnsHostName | sort -Property DnsHostName >> pv-enum.txt
+echo ================DomainOU >> pv-enum.txt
+Get-DomainOU >> pv-enum-raw.txt
+Get-DomainOU -Properties Name | sort -Property Name >> pv-enum.txt
+echo ================DomainGroup >> pv-enum.txt
+Get-DomainGroup >> pv-enum-raw.txt
+Get-DomainGroup | where Name -like "*Admins*" | select SamAccountName >> pv-enum.txt
+echo ================DomainGroupMember >> pv-enum.txt
+Get-DomainGroupMember >> pv-enum-raw.txt
+Get-DomainGroupMember -Identity "Domain Admins" | select MemberDistinguishedName >> pv-enum.txt
+echo ================GPOs >> pv-enum.txt
+Get-DomainGPO >> pv-enum-raw.txt
+Get-DomainGPO -Properties DisplayName | sort -Property DisplayName >> pv-enum.txt
+echo ================GPOGroups >> pv-enum.txt
+Get-DomainGPOLocalGroup >> pv-enum-raw.txt
+Get-DomainGPOLocalGroup | select GPODisplayName, GroupName >> pv-enum.txt
+echo ================GPOGroupUsers >> pv-enum.txt
+Get-DomainGPOUserLocalGroupMapping >> pv-enum-raw.txt
+Get-DomainGPOUserLocalGroupMapping -LocalGroup Administrators | select ObjectName, GPODisplayName, ContainerName, ComputerName | fl >> pv-enum.txt
+echo ================Trust >> pv-enum.txt
+Get-DomainTrust >> pv-enum.txt
+echo ================Unconstrained >> interesting-enum.txt
+Get-DomainComputer -Unconstrained >> interesting-enum.txt
+echo ================Constrained >> interesting-enum.txt
+Get-DomainComputer -TrustedToAuth >> interesting-enum.txt
+echo ================LAPS Computers >> interesting-enum.txt
+Get-DomainComputer | ? { $_."ms-Mcs-AdmPwdExpirationTime" -ne $null } | select dnsHostName
+echo ================Interesting ACLs >> interesting-enum.txt
+Find-InterestingDomainAcl >> interesting-enum.txt
